@@ -1,16 +1,23 @@
 import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Hero3DScene from "./Hero3DScene";
 
 const HeroSection = () => {
   return (
     <section
       id="home"
-      className="min-h-screen flex items-center section-padding pt-24 bg-gradient-to-br from-secondary/50 via-background to-primary/5"
+      className="min-h-screen flex items-center section-padding pt-24 relative overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto w-full">
+      {/* 3D Background */}
+      <Hero3DScene />
+      
+      {/* Gradient Overlay for readability */}
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/30 z-[1]" />
+
+      <div className="max-w-7xl mx-auto w-full relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
-          <div className="order-2 lg:order-1 animate-fade-up">
+          <div className="animate-fade-up">
             <p className="text-accent font-semibold mb-4 text-lg">Hello, I'm</p>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4">
               Mohana Kumar
@@ -26,10 +33,10 @@ const HeroSection = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-wrap gap-4 mb-8">
-              <Button size="lg" asChild>
+              <Button size="lg" asChild className="shadow-lg shadow-primary/25">
                 <a href="#projects">View Projects</a>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+              <Button size="lg" variant="outline" asChild className="backdrop-blur-sm">
                 <a href="#contact">Contact Me</a>
               </Button>
             </div>
@@ -41,7 +48,7 @@ const HeroSection = () => {
                 href="https://github.com/mohankumar624"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                className="p-2 rounded-full bg-secondary/80 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
                 <Github size={20} />
               </a>
@@ -49,40 +56,37 @@ const HeroSection = () => {
                 href="https://www.linkedin.com/in/mohan-kumar-0b2"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                className="p-2 rounded-full bg-secondary/80 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
                 <Linkedin size={20} />
               </a>
               <a
                 href="mailto:mohanhouse807@gmail.com"
-                className="p-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                className="p-2 rounded-full bg-secondary/80 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
                 <Mail size={20} />
               </a>
             </div>
           </div>
 
-          {/* Hero Image */}
-          <div className="order-1 lg:order-2 flex justify-center">
-            <div className="relative">
-              {/* Decorative Elements */}
-              <div className="absolute -top-4 -left-4 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float" />
-              <div className="absolute -bottom-4 -right-4 w-48 h-48 bg-accent/20 rounded-full blur-2xl animate-float" style={{ animationDelay: "2s" }} />
-              
-              {/* Profile Image Container */}
-              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-br from-primary to-accent p-1">
-                <div className="w-full h-full rounded-full bg-secondary flex items-center justify-center overflow-hidden">
-                  <div className="text-6xl md:text-8xl font-bold text-gradient">
-                    MK
-                  </div>
-                </div>
-              </div>
-
-              {/* Experience Badge */}
-              <div className="absolute -right-4 top-1/4 bg-card shadow-lg rounded-xl p-4 border border-border animate-scale-in">
-                <p className="text-2xl font-bold text-primary">2+</p>
-                <p className="text-sm text-muted-foreground">Years Learning</p>
-              </div>
+          {/* Stats Cards - Right Side */}
+          <div className="hidden lg:flex flex-col items-end gap-6">
+            {/* Experience Badge */}
+            <div className="bg-card/80 backdrop-blur-md shadow-xl rounded-2xl p-6 border border-border/50 animate-scale-in">
+              <p className="text-4xl font-bold text-primary">2+</p>
+              <p className="text-muted-foreground">Years Learning</p>
+            </div>
+            
+            {/* Projects Badge */}
+            <div className="bg-card/80 backdrop-blur-md shadow-xl rounded-2xl p-6 border border-border/50 animate-scale-in" style={{ animationDelay: "0.2s" }}>
+              <p className="text-4xl font-bold text-accent">4+</p>
+              <p className="text-muted-foreground">Projects Built</p>
+            </div>
+            
+            {/* Technologies Badge */}
+            <div className="bg-card/80 backdrop-blur-md shadow-xl rounded-2xl p-6 border border-border/50 animate-scale-in" style={{ animationDelay: "0.4s" }}>
+              <p className="text-4xl font-bold text-purple-500">10+</p>
+              <p className="text-muted-foreground">Technologies</p>
             </div>
           </div>
         </div>
