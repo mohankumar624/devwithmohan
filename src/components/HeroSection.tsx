@@ -73,7 +73,7 @@ const HeroSection = () => {
           <div className="hidden lg:flex flex-col items-end gap-6">
             {/* Experience Badge */}
             <div className="bg-card/80 backdrop-blur-md shadow-xl rounded-2xl p-6 border border-border/50 animate-scale-in">
-              <p className="text-4xl font-bold text-primary">2+</p>
+              <p className="text-4xl font-bold text-primary">3+</p>
               <p className="text-muted-foreground">Years Learning</p>
             </div>
             

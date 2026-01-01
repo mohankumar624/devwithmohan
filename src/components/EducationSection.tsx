@@ -44,17 +44,17 @@ const EducationSection = () => {
 
               <div className="space-y-4">
                 <h4 className="text-2xl font-bold text-foreground">
-                  B.Sc / B.E – Computer Science
+                  B.Tech – Information Technology
                 </h4>
                 <p className="text-lg text-primary font-medium">
-                  Web Essentials Specialization
+                  Information Technology
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm font-medium">
-                    2nd Year
+                    3rd Year
                   </span>
                   <span className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-medium">
-                    4th Semester
+                    6th Semester
                   </span>
                 </div>
                 <p className="text-muted-foreground leading-relaxed">
@@ -100,7 +100,7 @@ const EducationSection = () => {
                 <p className="text-sm text-muted-foreground">Technologies</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-primary">2+</p>
+                <p className="text-2xl font-bold text-primary">3+</p>
                 <p className="text-sm text-muted-foreground">Years Learning</p>
               </div>
             </div>
