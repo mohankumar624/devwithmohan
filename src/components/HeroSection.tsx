@@ -20,7 +20,7 @@ const HeroSection = () => {
           <div className="animate-fade-up">
             <p className="text-accent font-semibold mb-4 text-lg">Hello, I'm</p>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4">
-              Mohana Kumar
+              Mohan Kumar
             </h1>
             <h2 className="text-xl md:text-2xl text-primary font-medium mb-6">
               Web Developer | Data Science Enthusiast | AI & ML Practitioner
