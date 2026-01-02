@@ -28,7 +28,7 @@ const Footer = () => {
             viewport={{ once: true }}
             className="text-muted-foreground text-sm flex items-center gap-2"
           >
-            © {currentYear} Mohana Kumar. Made with
+            © {currentYear} Mohan Kumar. Made with
             <Heart size={14} className="text-red-500 fill-red-500 animate-pulse" />
             in India
           </motion.p>
