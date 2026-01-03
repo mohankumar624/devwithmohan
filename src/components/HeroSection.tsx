@@ -1,4 +1,5 @@
-import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowDown, Github, Linkedin, Mail, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import AnimatedShaderHero from "@/components/ui/animated-shader-hero";
 
 const HeroSection = () => {
@@ -33,31 +34,39 @@ const HeroSection = () => {
           }
         }}
       >
-        {/* Social Links */}
-        <div className="animate-fade-in-up animation-delay-800 flex items-center gap-4 mt-8">
-          <span className="text-muted-foreground text-sm">Follow me:</span>
-          <a
-            href="https://github.com/mohankumar624"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-full bg-secondary/80 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-          >
-            <Github size={20} />
-          </a>
-          <a
-            href="https://www.linkedin.com/in/mohan-kumar-0b2"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-full bg-secondary/80 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-          >
-            <Linkedin size={20} />
-          </a>
-          <a
-            href="mailto:mohanhouse807@gmail.com"
-            className="p-2 rounded-full bg-secondary/80 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-          >
-            <Mail size={20} />
-          </a>
+        {/* Social Links & Resume */}
+        <div className="animate-fade-in-up animation-delay-800 flex flex-wrap items-center gap-4 mt-8">
+          <Button asChild variant="outline" className="gap-2">
+            <a href="/resume.pdf" download="Mohan_Kumar_Resume.pdf">
+              <Download size={18} />
+              Download Resume
+            </a>
+          </Button>
+          <div className="flex items-center gap-3">
+            <span className="text-muted-foreground text-sm">Follow me:</span>
+            <a
+              href="https://github.com/mohankumar624"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-full bg-secondary/80 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+            >
+              <Github size={20} />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/mohan-kumar-0b2"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-full bg-secondary/80 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+            >
+              <Linkedin size={20} />
+            </a>
+            <a
+              href="mailto:mohanhouse807@gmail.com"
+              className="p-2 rounded-full bg-secondary/80 backdrop-blur-sm hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+            >
+              <Mail size={20} />
+            </a>
+          </div>
         </div>
 
         {/* Stats Cards */}
