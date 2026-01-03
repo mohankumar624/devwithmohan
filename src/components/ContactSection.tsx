@@ -1,8 +1,21 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Github, Linkedin, Send, ArrowRight } from "lucide-react";
+import { Mail, Phone, MapPin, Github, Linkedin, Send, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import emailjs from "@emailjs/browser";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
+  subject: z.string().trim().min(1, "Subject is required").max(200, "Subject must be less than 200 characters"),
+  message: z.string().trim().min(1, "Message is required").max(1000, "Message must be less than 1000 characters"),
+});
+
+type ContactFormData = z.infer<typeof contactSchema>;
 
 const contactInfo = [
   {
@@ -44,6 +57,73 @@ const socialLinks = [
 ];
 
 const ContactSection = () => {
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState<ContactFormData>({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name as keyof ContactFormData]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrors({});
+
+    const result = contactSchema.safeParse(formData);
+    if (!result.success) {
+      const fieldErrors: Partial<Record<keyof ContactFormData, string>> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as keyof ContactFormData] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await emailjs.send(
+        "service_w0r94yd",
+        "template_y9kl905",
+        {
+          from_name: result.data.name,
+          from_email: result.data.email,
+          subject: result.data.subject,
+          message: result.data.message,
+        },
+        "Os8sFrOo3qYmD2_H6"
+      );
+
+      toast({
+        title: "Message sent!",
+        description: "Thank you for reaching out. I'll get back to you soon.",
+      });
+
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      console.error("EmailJS error:", error);
+      toast({
+        title: "Failed to send message",
+        description: "Please try again or contact me directly via email.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section id="contact" className="section-padding bg-secondary/30 relative overflow-hidden">
       {/* Background decoration */}
@@ -151,26 +231,36 @@ const ContactSection = () => {
                 Send a Message
               </h3>
 
-              <form className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-foreground">
                       Name
                     </label>
                     <Input 
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
                       placeholder="Your name" 
                       className="h-12 rounded-xl border-border focus:border-primary"
+                      disabled={isLoading}
                     />
+                    {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-foreground">
                       Email
                     </label>
                     <Input 
-                      type="email" 
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
                       placeholder="your@email.com" 
                       className="h-12 rounded-xl border-border focus:border-primary"
+                      disabled={isLoading}
                     />
+                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                   </div>
                 </div>
 
@@ -179,9 +269,14 @@ const ContactSection = () => {
                     Subject
                   </label>
                   <Input 
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
                     placeholder="How can I help you?" 
                     className="h-12 rounded-xl border-border focus:border-primary"
+                    disabled={isLoading}
                   />
+                  {errors.subject && <p className="text-sm text-destructive">{errors.subject}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -189,16 +284,35 @@ const ContactSection = () => {
                     Message
                   </label>
                   <Textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
                     placeholder="Tell me about your project..."
                     rows={5}
                     className="rounded-xl border-border focus:border-primary resize-none"
+                    disabled={isLoading}
                   />
+                  {errors.message && <p className="text-sm text-destructive">{errors.message}</p>}
                 </div>
 
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button size="lg" className="w-full h-14 rounded-xl text-base gap-2 shadow-lg shadow-primary/25">
-                    <Send size={20} />
-                    Send Message
+                  <Button 
+                    type="submit" 
+                    size="lg" 
+                    className="w-full h-14 rounded-xl text-base gap-2 shadow-lg shadow-primary/25"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 size={20} className="animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send size={20} />
+                        Send Message
+                      </>
+                    )}
                   </Button>
                 </motion.div>
               </form>
