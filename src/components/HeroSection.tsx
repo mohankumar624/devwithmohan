@@ -29,6 +29,10 @@ const HeroSection = () => {
           />
         }}
         subtitle="Passionate about building responsive web applications and intelligent systems using machine learning. Specializing in AI-driven recommendation systems and full-stack development."
+        profileImage={{
+          src: "/placeholder.svg",
+          alt: "Mohan Kumar"
+        }}
         buttons={{
           primary: {
             text: "View Projects",
