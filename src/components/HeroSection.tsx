@@ -1,6 +1,7 @@
 import { ArrowDown, Github, Linkedin, Mail, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AnimatedShaderHero from "@/components/ui/animated-shader-hero";
+import { TypewriterEffect, TypewriterLoop } from "@/components/ui/typewriter-effect";
 
 const HeroSection = () => {
   const scrollToProjects = () => {
@@ -19,8 +20,13 @@ const HeroSection = () => {
           icons: ["🚀", "💼", "✨"]
         }}
         headline={{
-          line1: "Hi, I'm Mohan Kumar",
-          line2: "Web Developer & AI Enthusiast"
+          line1: <TypewriterEffect text="Hi, I'm Mohan Kumar" speed={80} />,
+          line2: <TypewriterLoop 
+            words={["Web Developer", "AI Enthusiast", "Full-Stack Developer", "ML Engineer"]} 
+            typingSpeed={80}
+            deletingSpeed={40}
+            pauseDuration={2000}
+          />
         }}
         subtitle="Passionate about building responsive web applications and intelligent systems using machine learning. Specializing in AI-driven recommendation systems and full-stack development."
         buttons={{
