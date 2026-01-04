@@ -6,8 +6,8 @@ interface HeroProps {
     icons?: string[];
   };
   headline: {
-    line1: string;
-    line2: string;
+    line1: string | React.ReactNode;
+    line2: string | React.ReactNode;
   };
   subtitle: string;
   buttons?: {
@@ -410,6 +410,13 @@ const AnimatedShaderHero: React.FC<HeroProps> = ({
         .animate-gradient {
           background-size: 200% 200%;
           animation: gradient-shift 3s ease infinite;
+        }
+        @keyframes blink {
+          0%, 50% { opacity: 1; }
+          51%, 100% { opacity: 0; }
+        }
+        .animate-blink {
+          animation: blink 0.7s infinite;
         }
       `}</style>
       
