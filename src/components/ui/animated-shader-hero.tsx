@@ -10,6 +10,10 @@ interface HeroProps {
     line2: string | React.ReactNode;
   };
   subtitle: string;
+  profileImage?: {
+    src: string;
+    alt: string;
+  };
   buttons?: {
     primary?: {
       text: string;
@@ -374,6 +378,7 @@ const AnimatedShaderHero: React.FC<HeroProps> = ({
   trustBadge,
   headline,
   subtitle,
+  profileImage,
   buttons,
   className = "",
   children
@@ -418,6 +423,13 @@ const AnimatedShaderHero: React.FC<HeroProps> = ({
         .animate-blink {
           animation: blink 0.7s infinite;
         }
+        @keyframes profile-glow {
+          0%, 100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.4), 0 0 40px hsl(var(--primary) / 0.2); }
+          50% { box-shadow: 0 0 30px hsl(var(--primary) / 0.6), 0 0 60px hsl(var(--primary) / 0.3); }
+        }
+        .animate-profile-glow {
+          animation: profile-glow 3s ease-in-out infinite;
+        }
       `}</style>
       
       <canvas
@@ -432,57 +444,84 @@ const AnimatedShaderHero: React.FC<HeroProps> = ({
       {/* Hero Content Overlay */}
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full">
-          {trustBadge && (
-            <div className="animate-fade-in-down mb-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/50 backdrop-blur-sm border border-border/50">
-                {trustBadge.icons && (
-                  <div className="flex -space-x-1">
-                    {trustBadge.icons.map((icon, index) => (
-                      <span key={index} className="text-lg">{icon}</span>
-                    ))}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-16">
+            {/* Left Content */}
+            <div className="flex-1">
+              {trustBadge && (
+                <div className="animate-fade-in-down mb-6">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/50 backdrop-blur-sm border border-border/50">
+                    {trustBadge.icons && (
+                      <div className="flex -space-x-1">
+                        {trustBadge.icons.map((icon, index) => (
+                          <span key={index} className="text-lg">{icon}</span>
+                        ))}
+                      </div>
+                    )}
+                    <span className="text-sm text-muted-foreground">{trustBadge.text}</span>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-6">
+                <h1 className="animate-fade-in-up animation-delay-200">
+                  <span className="block text-4xl md:text-5xl lg:text-7xl font-bold text-foreground">
+                    {headline.line1}
+                  </span>
+                  <span className="block text-4xl md:text-5xl lg:text-7xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient mt-2">
+                    {headline.line2}
+                  </span>
+                </h1>
+                
+                <p className="animate-fade-in-up animation-delay-400 text-lg md:text-xl text-muted-foreground max-w-2xl">
+                  {subtitle}
+                </p>
+                
+                {buttons && (
+                  <div className="animate-fade-in-up animation-delay-600 flex flex-wrap gap-4">
+                    {buttons.primary && (
+                      <button
+                        onClick={buttons.primary.onClick}
+                        className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-all shadow-lg shadow-primary/25"
+                      >
+                        {buttons.primary.text}
+                      </button>
+                    )}
+                    {buttons.secondary && (
+                      <button
+                        onClick={buttons.secondary.onClick}
+                        className="px-8 py-3 bg-secondary/80 backdrop-blur-sm text-foreground rounded-lg font-medium hover:bg-secondary transition-all border border-border/50"
+                      >
+                        {buttons.secondary.text}
+                      </button>
+                    )}
                   </div>
                 )}
-                <span className="text-sm text-muted-foreground">{trustBadge.text}</span>
+                
+                {children}
               </div>
             </div>
-          )}
 
-          <div className="space-y-6">
-            <h1 className="animate-fade-in-up animation-delay-200">
-              <span className="block text-4xl md:text-5xl lg:text-7xl font-bold text-foreground">
-                {headline.line1}
-              </span>
-              <span className="block text-4xl md:text-5xl lg:text-7xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient mt-2">
-                {headline.line2}
-              </span>
-            </h1>
-            
-            <p className="animate-fade-in-up animation-delay-400 text-lg md:text-xl text-muted-foreground max-w-2xl">
-              {subtitle}
-            </p>
-            
-            {buttons && (
-              <div className="animate-fade-in-up animation-delay-600 flex flex-wrap gap-4">
-                {buttons.primary && (
-                  <button
-                    onClick={buttons.primary.onClick}
-                    className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-all shadow-lg shadow-primary/25"
-                  >
-                    {buttons.primary.text}
-                  </button>
-                )}
-                {buttons.secondary && (
-                  <button
-                    onClick={buttons.secondary.onClick}
-                    className="px-8 py-3 bg-secondary/80 backdrop-blur-sm text-foreground rounded-lg font-medium hover:bg-secondary transition-all border border-border/50"
-                  >
-                    {buttons.secondary.text}
-                  </button>
-                )}
+            {/* Profile Image */}
+            {profileImage && (
+              <div className="animate-fade-in-up animation-delay-400 flex justify-center lg:justify-end">
+                <div className="relative group">
+                  {/* Decorative ring */}
+                  <div className="absolute -inset-2 rounded-full bg-gradient-to-r from-primary via-accent to-primary opacity-75 blur-lg group-hover:opacity-100 transition-opacity duration-500 animate-profile-glow" />
+                  
+                  {/* Image container */}
+                  <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 rounded-full overflow-hidden border-4 border-background shadow-2xl group-hover:scale-105 transition-transform duration-500">
+                    <img
+                      src={profileImage.src}
+                      alt={profileImage.alt}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  
+                  {/* Status indicator */}
+                  <div className="absolute bottom-4 right-4 w-6 h-6 bg-green-500 rounded-full border-4 border-background shadow-lg" title="Available for work" />
+                </div>
               </div>
             )}
-            
-            {children}
           </div>
         </div>
       </div>
