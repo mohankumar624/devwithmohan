@@ -23,13 +23,11 @@ const ChatBot = () => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const streamChat = async (userMessage: string) => {
@@ -207,7 +205,7 @@ const ChatBot = () => {
             </div>
 
             {/* Messages */}
-            <ScrollArea ref={scrollRef} className="flex-1 p-4">
+            <ScrollArea className="flex-1 p-4">
               <div className="space-y-4">
                 {messages.map((msg, idx) => (
                   <motion.div
@@ -239,6 +237,7 @@ const ChatBot = () => {
                     )}
                   </motion.div>
                 ))}
+                <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
 
