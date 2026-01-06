@@ -1,9 +1,72 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Rate limiting: simple in-memory store (resets on function cold start)
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_MAX = 20; // max requests per window
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute window
+const MAX_MESSAGE_LENGTH = 500;
+const MAX_MESSAGES_COUNT = 20;
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get("origin") || "";
+  // Allow requests from the Supabase project domain and common development URLs
+  const allowedOrigins = [
+    "https://dcidksgnduiiqrbfmcey.supabase.co",
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://lovable.dev",
+  ];
+  
+  // Also allow any *.lovable.app subdomain for preview deployments
+  const isLovableApp = origin.endsWith(".lovable.app");
+  const isAllowed = allowedOrigins.includes(origin) || isLovableApp;
+  
+  return {
+    "Access-Control-Allow-Origin": isAllowed ? origin : allowedOrigins[0],
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  };
+}
+
+function checkRateLimit(clientId: string): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(clientId);
+  
+  if (!record || now > record.resetTime) {
+    rateLimitMap.set(clientId, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+  
+  if (record.count >= RATE_LIMIT_MAX) {
+    return false;
+  }
+  
+  record.count++;
+  return true;
+}
+
+function validateMessages(messages: unknown): { valid: boolean; error?: string } {
+  if (!Array.isArray(messages)) {
+    return { valid: false, error: "Messages must be an array" };
+  }
+  
+  if (messages.length > MAX_MESSAGES_COUNT) {
+    return { valid: false, error: "Too many messages" };
+  }
+  
+  for (const msg of messages) {
+    if (typeof msg !== "object" || msg === null) {
+      return { valid: false, error: "Invalid message format" };
+    }
+    if (typeof (msg as { content?: unknown }).content !== "string") {
+      return { valid: false, error: "Message content must be a string" };
+    }
+    if (((msg as { content: string }).content).length > MAX_MESSAGE_LENGTH) {
+      return { valid: false, error: "Message too long" };
+    }
+  }
+  
+  return { valid: true };
+}
 
 const PORTFOLIO_CONTEXT = `
 You are Mohan Kumar's portfolio assistant. You ONLY answer questions about Mohan Kumar based on the information provided below. If someone asks about something not related to Mohan's portfolio, skills, projects, or services, politely redirect them to ask portfolio-related questions.
@@ -90,12 +153,37 @@ IMPORTANT RULES:
 `;
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req);
+  
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Get client identifier for rate limiting (use IP or fallback)
+    const clientId = req.headers.get("x-forwarded-for") || 
+                     req.headers.get("x-real-ip") || 
+                     "anonymous";
+    
+    // Check rate limit
+    if (!checkRateLimit(clientId)) {
+      return new Response(JSON.stringify({ error: "Too many requests. Please try again later." }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    
     const { messages } = await req.json();
+    
+    // Validate messages
+    const validation = validateMessages(messages);
+    if (!validation.valid) {
+      return new Response(JSON.stringify({ error: validation.error }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -119,22 +207,13 @@ serve(async (req) => {
     });
 
     if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "Service temporarily unavailable. Please try again later." }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+      // Log error details server-side only
       const errorText = await response.text();
       console.error("AI gateway error:", response.status, errorText);
-      return new Response(JSON.stringify({ error: "Failed to get response" }), {
-        status: 500,
+      
+      // Return generic error messages to client
+      return new Response(JSON.stringify({ error: "Unable to process your request. Please try again." }), {
+        status: response.status === 429 || response.status === 402 ? response.status : 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -143,8 +222,9 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (error) {
+    // Log detailed error server-side only
     console.error("Portfolio chat error:", error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
+    return new Response(JSON.stringify({ error: "Something went wrong. Please try again." }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

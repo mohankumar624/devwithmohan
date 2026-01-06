@@ -12,6 +12,7 @@ type Message = {
 };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/portfolio-chat`;
+const MAX_INPUT_LENGTH = 500;
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -126,10 +127,9 @@ const ChatBot = () => {
         }
       }
     } catch (error) {
-      console.error("Chat error:", error);
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to send message",
+        description: "Failed to send message. Please try again.",
         variant: "destructive",
       });
       // Remove the empty assistant message if error occurred
@@ -246,10 +246,11 @@ const ChatBot = () => {
               <div className="flex gap-2">
                 <Input
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  onChange={(e) => setInput(e.target.value.slice(0, MAX_INPUT_LENGTH))}
                   placeholder="Ask about skills, projects..."
                   className="flex-1 rounded-full"
                   disabled={isLoading}
+                  maxLength={MAX_INPUT_LENGTH}
                 />
                 <Button
                   type="submit"
