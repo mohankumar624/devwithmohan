@@ -112,8 +112,7 @@ const ContactSection = () => {
       });
 
       setFormData({ name: "", email: "", subject: "", message: "" });
-    } catch (error) {
-      console.error("EmailJS error:", error);
+    } catch {
       toast({
         title: "Failed to send message",
         description: "Please try again or contact me directly via email.",
