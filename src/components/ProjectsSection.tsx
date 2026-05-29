@@ -160,15 +160,29 @@ const ProjectsSection = () => {
 
                 {/* Actions */}
                 <div className="flex gap-3">
-                  <Button variant="outline" size="sm" className="gap-2 flex-1">
-                    <Github size={16} />
-                    View Code
+                  <Button asChild variant="outline" size="sm" className="gap-2 flex-1">
+                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                      <Github size={16} />
+                      View Code
+                    </a>
                   </Button>
-                  <Button size="sm" className="gap-2 flex-1">
-                    <ExternalLink size={16} />
-                    Live Demo
+                  <Button asChild size="sm" className="gap-2 flex-1">
+                    <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink size={16} />
+                      Live Demo
+                    </a>
                   </Button>
                 </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+export default ProjectsSection;
               </div>
             </motion.div>
           ))}
