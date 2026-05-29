@@ -13,6 +13,8 @@ const projects = [
     icon: Film,
     color: "from-purple-500 to-pink-500",
     featured: true,
+    githubUrl: "https://github.com/mohankumar",
+    demoUrl: "https://cinematch-demo.lovable.app",
   },
   {
     title: "Customer Segmentation",
@@ -23,6 +25,8 @@ const projects = [
     icon: ShoppingCart,
     color: "from-blue-500 to-cyan-500",
     featured: true,
+    githubUrl: "https://github.com/mohankumar",
+    demoUrl: "https://customer-segmentation-demo.lovable.app",
   },
   {
     title: "NoteBox",
@@ -33,6 +37,8 @@ const projects = [
     icon: StickyNote,
     color: "from-green-500 to-emerald-500",
     featured: false,
+    githubUrl: "https://github.com/mohankumar",
+    demoUrl: "https://notebox-demo.lovable.app",
   },
   {
     title: "Portfolio Website",
@@ -43,6 +49,8 @@ const projects = [
     icon: Globe,
     color: "from-orange-500 to-amber-500",
     featured: false,
+    githubUrl: "https://github.com/mohankumar",
+    demoUrl: "https://myportfoliomohan.lovable.app",
   },
 ];
 
@@ -152,13 +160,17 @@ const ProjectsSection = () => {
 
                 {/* Actions */}
                 <div className="flex gap-3">
-                  <Button variant="outline" size="sm" className="gap-2 flex-1">
-                    <Github size={16} />
-                    View Code
+                  <Button asChild variant="outline" size="sm" className="gap-2 flex-1">
+                    <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                      <Github size={16} />
+                      View Code
+                    </a>
                   </Button>
-                  <Button size="sm" className="gap-2 flex-1">
-                    <ExternalLink size={16} />
-                    Live Demo
+                  <Button asChild size="sm" className="gap-2 flex-1">
+                    <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink size={16} />
+                      Live Demo
+                    </a>
                   </Button>
                 </div>
               </div>
