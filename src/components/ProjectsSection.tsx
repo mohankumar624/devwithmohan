@@ -183,13 +183,3 @@ const ProjectsSection = () => {
 };
 
 export default ProjectsSection;
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-export default ProjectsSection;
