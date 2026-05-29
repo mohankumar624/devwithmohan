@@ -13,6 +13,8 @@ const projects = [
     icon: Film,
     color: "from-purple-500 to-pink-500",
     featured: true,
+    githubUrl: "https://github.com/mohankumar",
+    demoUrl: "https://cinematch-demo.lovable.app",
   },
   {
     title: "Customer Segmentation",
@@ -23,6 +25,8 @@ const projects = [
     icon: ShoppingCart,
     color: "from-blue-500 to-cyan-500",
     featured: true,
+    githubUrl: "https://github.com/mohankumar",
+    demoUrl: "https://customer-segmentation-demo.lovable.app",
   },
   {
     title: "NoteBox",
@@ -33,6 +37,8 @@ const projects = [
     icon: StickyNote,
     color: "from-green-500 to-emerald-500",
     featured: false,
+    githubUrl: "https://github.com/mohankumar",
+    demoUrl: "https://notebox-demo.lovable.app",
   },
   {
     title: "Portfolio Website",
@@ -43,6 +49,8 @@ const projects = [
     icon: Globe,
     color: "from-orange-500 to-amber-500",
     featured: false,
+    githubUrl: "https://github.com/mohankumar",
+    demoUrl: "https://myportfoliomohan.lovable.app",
   },
 ];
 
